@@ -54,8 +54,9 @@ getProjectsPath()
 
     if [[ -n ${projectsPath} ]]; then
         projectsPath=`echo ${projectsPath} | sed -e 's/key=//g' -e 's/value=//g' -e 's/" "/"\n"/g' -e 's/^ *//g' -e 's/ *$//g' -e 's/"//g' -e "s/[$]USER_HOME[$]/${escapedHome}/g"`
-        echo ${projectsPath}
     fi
+
+    echo ${projectsPath}
 }
 
 ##
@@ -81,7 +82,7 @@ findProject()
                 projectName=`extractProjectName ${projectPath}`
                 if [[ -n "${projectName}" ]] && [[ "${projectName}" != "" ]]; then
                     matchName=`echo "${projectName}" | grep -i "${QUERY}" | wc -l`
-                    matchPath=`echo "${projectPath}" | grep -i "${QUERY}" | wc -l`
+                    matchPath=`echo "${projectPath##*/}" | grep -i "${QUERY}" | wc -l`
 
                     if ([[ "${matchName}" -eq 1 ]] || [[ "${matchPath}" -eq 1 ]]) || [[ -z "${QUERY}" ]]; then
                         addItem ${projectName} "${BIN}||${projectPath}" ${projectName} ${projectPath} `getAppIcon ${BIN}` 'yes' ${projectName}
