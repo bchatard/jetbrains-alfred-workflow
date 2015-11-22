@@ -39,6 +39,8 @@ I test with this products/versions:
 * PyCharm CE: v5 ;
 * RubyMine: v8 ;
 * IntelliJ Idea CE: v15 ;
+* CLion: v1.2 ;
+* AppCode: v3.3 ;
 
 NB: about PhpStorm, if you need compatibility with older version please use my old workflow: [PhpStorm Alfred Workflow](https://github.com/bchatard/phpstorm-alfred-workflow)
 

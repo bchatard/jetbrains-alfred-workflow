@@ -44,7 +44,7 @@ xmlEncode()
 
 getItemsXml()
 {
-    echo "<?xml version='1.0'?><items>"
+    echo "<?xml version=\"1.0\"?><items>"
     for R in ${ITEMS[*]}; do
         echo "$R" | tr "\n" " "
     done
