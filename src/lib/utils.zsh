@@ -1,4 +1,15 @@
 
+############################
+##  String manipulations  ##
+############################
+
+##
+ # @param $1 string
+ # @return string
+toLowerCase()
+{
+    echo "${(L)${1}}"
+}
 
 #############################
 ##  Manage App & App Icon  ##

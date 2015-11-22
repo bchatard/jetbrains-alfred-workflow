@@ -47,13 +47,13 @@ getProjectsPath()
     projectsPath=''
 
     if [[ -r ${recentProjectDirectories} ]]; then
-        projectsPath=`xmllint --xpath ${XPATH_RECENT_PROJECT_DIRECTORIES} ${recentProjectDirectories}`
+        projectsPath=`xmllint --xpath ${XPATH_RECENT_PROJECT_DIRECTORIES} ${recentProjectDirectories} 2>/dev/null`
     elif [[ -r ${recentProjects} ]]; then # Intellij Idea
         projectsPath=`xmllint --xpath ${XPATH_RECENT_PROJECTS} ${recentProjects} 2>/dev/null`
     fi
 
     if [[ -n ${projectsPath} ]]; then
-        projectsPath=`echo ${projectsPath} | sed -e 's/key=//g' -e 's/value=//g' -e 's/" "/"\n"/g' -e 's/^ *//g' -e 's/ *$//g' -e 's/"//g' -e "s/[$]USER_HOME[$]/${escapedHome}/g"`
+        projectsPath=`echo ${projectsPath} | sed -e 's/ value="//g' -e 's/"/\n/g' -e "s/[$]USER_HOME[$]/${escapedHome}/g"`
     fi
 
     echo ${projectsPath}
@@ -77,16 +77,29 @@ findProject()
         else
             # Search
             nbProject=0
+            queryLowerCase=`toLowerCase ${QUERY}`
 
             for projectPath in "${(@f)projectsPath}"; do
-                projectName=`extractProjectName ${projectPath}`
-                if [[ -n "${projectName}" ]] && [[ "${projectName}" != "" ]]; then
-                    matchName=`echo "${projectName}" | grep -i "${QUERY}" | wc -l`
-                    matchPath=`echo "${projectPath##*/}" | grep -i "${QUERY}" | wc -l`
+                # Limit result? Can improve performance but we lose information
+#                if [[ ${nbProject} -eq 9 ]]; then
+#                    break;
+#                fi
 
-                    if ([[ "${matchName}" -eq 1 ]] || [[ "${matchPath}" -eq 1 ]]) || [[ -z "${QUERY}" ]]; then
+                projectName=`extractProjectName ${projectPath}`
+                if [[ -n "${projectName}" ]]; then
+
+                    if [[ -z "${QUERY}" ]]; then # list projects if no query
                         addItem ${projectName} "${BIN}||${projectPath}" ${projectName} ${projectPath} `getAppIcon ${BIN}` 'yes' ${projectName}
                         ((nbProject++))
+                    else
+                        # search project by name or by directory name (last directory in project path)
+                        projectNameLowerCase=`toLowerCase ${projectName}`
+                        projectPathLowerCase=`toLowerCase ${projectPath##*/}`
+
+                        if [[ ${projectNameLowerCase} = *${queryLowerCase}* ]] || [[ ${projectPathLowerCase} = *${queryLowerCase}* ]]; then
+                            addItem ${projectName} "${BIN}||${projectPath}" ${projectName} ${projectPath} `getAppIcon ${BIN}` 'yes' ${projectName}
+                            ((nbProject++))
+                        fi
                     fi
                 fi
             done
