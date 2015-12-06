@@ -4,6 +4,30 @@
 ############################
 
 ##
+ # Perform removeAccents & toLowerCase
+ #
+ # @param $1 string
+ # @return string
+cleanString()
+{
+    cleanStr=`removeAccents $1`
+    cleanStr=`toLowerCase ${cleanStr}`
+
+    echo ${cleanStr}
+}
+
+##
+ # Credits: http://www.alfredforum.com/topic/2015-encoding-issue/?p=26379
+ #
+ # @param $1
+ # @return string
+removeAccents()
+{
+#    echo $1 | iconv -f utf8 -t ascii//TRANSLIT
+    echo $1 | iconv -f UTF8-MAC -t ascii//TRANSLIT
+}
+
+##
  # @param $1 string
  # @return string
 toLowerCase()
@@ -52,4 +76,30 @@ getAppPath()
     fi
 
     echo ${APP_PATH}
+}
+
+###########
+## Debug ##
+###########
+
+DEBUG_ENABLED=0
+DEBUG_FILENAME=''
+
+enableDebug()
+{
+    if [[ $1 -eq 1 ]]; then
+        DEBUG_ENABLED=1
+        DEBUG_FILENAME="debug_$(date +'%Y%m%d').log"
+        if [[ ! -w ${DEBUG_FILENAME} ]]; then
+            echo "" > ${DEBUG_FILENAME}
+        fi
+    fi
+
+}
+
+addDebug()
+{
+    if [[ ${DEBUG_ENABLED} -eq 1 ]]; then
+        echo $1 >> ${DEBUG_FILENAME}
+    fi
 }

@@ -9,6 +9,12 @@ IFS='#########################'
 BIN=$1
 QUERY=$2
 
+##
+ # 0: disabled / 1: enabled
+ # if enabled log information in file debug_YMD.log (in current directory)
+DEBUG=0
+
+
 XPATH_RECENT_PROJECT_DIRECTORIES="//component[@name='RecentDirectoryProjectsManager']/option[@name='recentPaths']/list/option/@value"
 XPATH_RECENT_PROJECTS="//component[@name='RecentProjectsManager']/option[@name='recentPaths']/list/option/@value"
 
@@ -37,23 +43,28 @@ getProjectsPath()
 {
     escapedHome=`echo $HOME | sed -e 's/[/]/\\\\\//g'`
 
-    basePath=`grep -F -m 1 'CONFIG_PATH =' ${BIN}`
-    basePath="${basePath#*\'}"
-    basePath="${basePath%\'*}"
+    configPath=`grep -F -m 1 'CONFIG_PATH =' ${BIN}`
+    configPath="${configPath#*\'}"
+    configPath="${configPath%\'*}"
+    addDebug "Config Path: ${configPath}"
 
-    recentProjectDirectories="${basePath}/options/recentProjectDirectories.xml"
-    recentProjects="${basePath}/options/recentProjects.xml"
+    recentProjectDirectories="${configPath}/options/recentProjectDirectories.xml"
+    recentProjects="${configPath}/options/recentProjects.xml"
 
     projectsPath=''
 
     if [[ -r ${recentProjectDirectories} ]]; then
+        addDebug "Work with: ${recentProjectDirectories}"
         projectsPath=`xmllint --xpath ${XPATH_RECENT_PROJECT_DIRECTORIES} ${recentProjectDirectories} 2>/dev/null`
     elif [[ -r ${recentProjects} ]]; then # Intellij Idea
+        addDebug "Work with: ${recentProjects}"
         projectsPath=`xmllint --xpath ${XPATH_RECENT_PROJECTS} ${recentProjects} 2>/dev/null`
     fi
 
     if [[ -n ${projectsPath} ]]; then
-        projectsPath=`echo ${projectsPath} | sed -e 's/ value="//g' -e 's/"/\n/g' -e "s/[$]USER_HOME[$]/${escapedHome}/g"`
+        addDebug "Raw Projects Path:\n${projectsPath}"
+        projectsPath=`echo ${projectsPath} | sed -e 's/ value="//g' -e 's/"/\\n/g' -e "s/[$]USER_HOME[$]/${escapedHome}/g"`
+        addDebug "Projects Path:\n${projectsPath}"
     fi
 
     echo ${projectsPath}
@@ -65,11 +76,15 @@ getProjectsPath()
  # @return string (XML for Alfred)
 findProject()
 {
+    # Enable debug mode if needed
+    enableDebug ${DEBUG}
+
     # Add test before run search
     appPath=`getAppPath ${BIN}`
     if [[ -z ${appPath} ]]; then
         addItem 'error' '' "Can't find command line launcher for '${BIN}'" "Create/Update command line launcher in Tools > Create Command-line Launcher" 'AlertCautionIcon.icns' 'yes' ''
     else
+        addDebug "AppPath: ${appPath}"
         # Check if some projects exists
         projectsPath=`getProjectsPath`
         if [[ -z ${projectsPath} ]]; then
@@ -80,12 +95,14 @@ findProject()
             queryLowerCase=`toLowerCase ${QUERY}`
 
             for projectPath in "${(@f)projectsPath}"; do
+                addDebug "\tProcess ${projectPath}"
                 # Limit result? Can improve performance but we lose information
 #                if [[ ${nbProject} -eq 9 ]]; then
 #                    break;
 #                fi
 
                 projectName=`extractProjectName ${projectPath}`
+                addDebug "\t Project Name ${projectName}"
                 if [[ -n "${projectName}" ]]; then
 
                     if [[ -z "${QUERY}" ]]; then # list projects if no query
@@ -96,12 +113,16 @@ findProject()
                         projectNameLowerCase=`toLowerCase ${projectName}`
                         projectPathLowerCase=`toLowerCase ${projectPath##*/}`
 
+                        addDebug "\t  Search '${queryLowerCase}' in '${projectNameLowerCase}' OR '${projectPathLowerCase}'"
+
                         if [[ ${projectNameLowerCase} = *${queryLowerCase}* ]] || [[ ${projectPathLowerCase} = *${queryLowerCase}* ]]; then
                             addItem ${projectName} "${BIN}||${projectPath}" ${projectName} ${projectPath} `getAppIcon ${BIN}` 'yes' ${projectName}
                             ((nbProject++))
                         fi
                     fi
                 fi
+
+                addDebug ""
             done
 
             # if there is no project display information
