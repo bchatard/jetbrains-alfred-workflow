@@ -1,4 +1,4 @@
-
+#!/bin/zsh
 ORIG_IFS=${IFS}
 IFS='#########################'
 
@@ -63,7 +63,7 @@ getProjectsPath()
 
     if [[ -n ${projectsPath} ]]; then
         addDebug "Raw Projects Path:\n${projectsPath}"
-        projectsPath=`echo ${projectsPath} | sed -e 's/ value="//g' -e 's/"/\\n/g' -e "s/[$]USER_HOME[$]/${escapedHome}/g"`
+        projectsPath=`echo ${projectsPath} | sed -e 's/ value="//g' -e 's/"/\\\n/g' -e "s/[$]USER_HOME[$]/${escapedHome}/g"`
         addDebug "Projects Path:\n${projectsPath}"
     fi
 
