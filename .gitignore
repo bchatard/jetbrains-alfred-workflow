@@ -1,1 +1,6 @@
+# IDE
 /.idea/
+
+# Debug log
+/*.log
+/*/*.log
