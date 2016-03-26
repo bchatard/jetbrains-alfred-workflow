@@ -34,12 +34,12 @@ If you change command line tools name, you need to update workflow settings:
 ## Supported versions
 I test with this products/versions:
 
-* PhpStorm: v10 ;
-* WebStorm: v11 ;
-* PyCharm CE: v5 ;
+* PhpStorm: v10 / 2016.x ;
+* WebStorm: v11 / 2016.x ;
+* PyCharm CE: v5 / 2016.x ;
 * RubyMine: v8 ;
-* IntelliJ Idea CE: v15 ;
-* CLion: v1.2 ;
+* IntelliJ Idea CE: v15 / 2016.x ;
+* CLion: v1.2 / 2016.x ;
 * AppCode: v3.3 ;
 
 NB: about PhpStorm, if you need compatibility with older version please use my old workflow: [PhpStorm Alfred Workflow](https://github.com/bchatard/phpstorm-alfred-workflow)

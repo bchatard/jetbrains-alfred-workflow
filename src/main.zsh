@@ -18,6 +18,8 @@ DEBUG=0
 XPATH_RECENT_PROJECT_DIRECTORIES="//component[@name='RecentDirectoryProjectsManager']/option[@name='recentPaths']/list/option/@value"
 XPATH_RECENT_PROJECTS="//component[@name='RecentProjectsManager']/option[@name='recentPaths']/list/option/@value"
 
+XPATH_PROJECT_NAME="(//component[@name='ProjectView']/panes/pane[@id='ProjectPane']/subPane/PATH/PATH_ELEMENT/option/@value)[1]"
+
 ##
  # Retrieve project name from project configuration
  #  search project name in this file because project name can be different than folder name
@@ -28,8 +30,14 @@ XPATH_RECENT_PROJECTS="//component[@name='RecentProjectsManager']/option[@name='
 extractProjectName()
 {
     nameFile="$1/.idea/.name"
+    workspaceFile="$1/.idea/workspace.xml"
     if [[ -r ${nameFile} ]]; then
+        addDebug "extractProjectName via .name"
         projectName=`cat ${nameFile}`
+        echo ${projectName}
+    elif [[ -r ${workspaceFile} ]]; then
+        addDebug "extractProjectName via workspace.xml"
+        projectName=`xmllint --xpath ${XPATH_PROJECT_NAME} ${workspaceFile} 2>/dev/null | sed -e 's/ value="//g' -e 's/"//g'`
         echo ${projectName}
     fi
 }
