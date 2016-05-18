@@ -1,7 +1,7 @@
 JetBrains: Open project
 ========================
 
-Alfred2 workflow to easily open your projects with your favorite JetBrains product.
+Alfred2 & Alfred3 workflow to easily open your projects with your favorite JetBrains product.
 
 ## Requirements
 This workflow need one of JetBrains products, and its command line launchers to works:
