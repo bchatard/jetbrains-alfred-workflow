@@ -44,7 +44,7 @@ I test with this products/versions:
 * IntelliJ Idea CE: v15 / 2016.x ;
 * PhpStorm: v10 / 2016.x ;
 * PyCharm CE: v5 / 2016.x ;
-* RubyMine: v8 ;
+* RubyMine: v8 / 2016.x ;
 * WebStorm: v11 / 2016.x ;
 
 NB: about PhpStorm, if you need compatibility with older version please use my old workflow: [PhpStorm Alfred Workflow](https://github.com/bchatard/phpstorm-alfred-workflow)
@@ -66,6 +66,9 @@ If you change command line tools name/path or if you want to change keyword, you
 After an application upgrade you need to update the _Command-line launcher_
 ![jetbrains-alfred-caskroom](https://raw.githubusercontent.com/bchatard/jetbrains-alfred-workflow/master/doc/img/caskroom/jetbrains-alfred-caskroom.png)
 
+
+## Changelog
+[Changelog](CHANGELOG.md)
 
 ## Credits
 [Bash Workflow Handler](https://github.com/markokaestner/bash-workflow-handler)
