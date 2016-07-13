@@ -33,6 +33,7 @@ Example with PhpStorm:
  * PyCharm: `charm` ;
  * RubyMine: `mine` ;
  * WebStorm: `wstorm` ;
+ * Android Studio: `studio`;
 
 
 
@@ -46,6 +47,7 @@ I test with this products/versions:
 * PyCharm CE: v5 / 2016.x ;
 * RubyMine: v8 / 2016.x ;
 * WebStorm: v11 / 2016.x ;
+* Android Studio: v2.x ;
 
 NB: about PhpStorm, if you need compatibility with older version please use my old workflow: [PhpStorm Alfred Workflow](https://github.com/bchatard/phpstorm-alfred-workflow)
 
