@@ -10,8 +10,8 @@
  # @return string
 cleanString()
 {
-    cleanStr=`removeAccents $1`
-    cleanStr=`toLowerCase ${cleanStr}`
+    cleanStr=$(removeAccents $1)
+    cleanStr=$(toLowerCase ${cleanStr})
 
     echo ${cleanStr}
 }
@@ -50,7 +50,7 @@ APP_ICON=''
 getAppIcon()
 {
     if [[ -z "${APP_ICON}" ]]; then
-        appPath=`getAppPath $1`
+        appPath=$(getAppPath $1)
         if [[ -n "${appPath}" ]]; then
             APP_ICON="fileicon:${appPath}"
         fi

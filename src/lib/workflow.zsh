@@ -17,13 +17,13 @@ ITEMS=()
  # @param $7 string (autocomplete)
 addItem()
 {
-    ITEM="<item uid=\"$(xmlEncode "$1")\" valid=\"$6\" autocomplete=\"$7\">"
+    ITEM="<item uid=\"$(xmlEncode "$1")\" valid=\"$6\" autocomplete=\"$(xmlEncode $7)\">"
     ITEM="${ITEM}<title>$(xmlEncode "$3")</title>"
     ITEM="${ITEM}<subtitle>$(xmlEncode "$4")</subtitle>"
     ITEM="${ITEM}<arg>$(xmlEncode "$2")</arg>"
     if [[ ! "$5" == '' ]]; then
         if [[ $5 =~ fileicon:* ]]; then
-            icon=`echo $5 | sed -e 's/fileicon://g'`
+            icon=$(echo $5 | sed -e 's/fileicon://g')
             ITEM="${ITEM}<icon type=\"fileicon\">$(xmlEncode "${icon}")</icon>"
         elif [[ $5 == *icns ]]; then
             icon="/System/Library/CoreServices/CoreTypes.bundle/Contents/Resources/$5"
@@ -34,12 +34,18 @@ addItem()
     fi
     ITEM="${ITEM}</item>"
 
-    ITEMS+=("$ITEM")
+    ITEMS+=("${ITEM}")
 }
 
 xmlEncode()
 {
+    # see: https://en.wikipedia.org/wiki/List_of_XML_and_HTML_character_entity_references#Predefined_entities_in_XML
     echo "$1" | sed -e 's/&/\&amp;/g' -e 's/>/\&gt;/g' -e 's/</\&lt;/g' -e "s/'/\&apos;/g" -e 's/"/\&quot;/g'
+}
+
+xmlDecode()
+{
+    echo "$1" | perl -MHTML::Entities -pe 'decode_entities($_);'
 }
 
 getItemsXml()
