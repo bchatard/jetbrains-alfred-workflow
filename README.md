@@ -26,13 +26,13 @@ Example with PhpStorm:
 ![jetbrains-projects-secret-light](https://raw.githubusercontent.com/bchatard/jetbrains-alfred-workflow/master/doc/img/jetbrains-projects-secret-light.png)
 
 ### Default Keywords
- * AppCode: `appcode` ;
- * CLion: `clion` ;
- * IntelliJ Idea: `idea` ;
- * PhpStorm: `pstorm` ;
- * PyCharm: `charm` ;
- * RubyMine: `mine` ;
- * WebStorm: `wstorm` ;
+ * AppCode: `appcode`;
+ * CLion: `clion`;
+ * IntelliJ Idea: `idea`;
+ * PhpStorm: `pstorm` (before 2016.3) or `phpstorm` (2016.3+);
+ * PyCharm: `charm`;
+ * RubyMine: `mine`;
+ * WebStorm: `wstorm` (before 2016.3) or `webstorm` (2016.3+);
  * Android Studio: `studio`;
 
 
@@ -50,7 +50,7 @@ I test with this products/versions:
 * Android Studio: v2.x ;
 
 NB: about PhpStorm, if you need compatibility with older version please use my old workflow: [PhpStorm Alfred Workflow](https://github.com/bchatard/phpstorm-alfred-workflow)
-
+NB2: PhpStorm & WebStorm change bin name in 2016.3 [#9](https://github.com/bchatard/jetbrains-alfred-workflow/issues/9).
 
 ### Customisation
 If you change command line tools name/path or if you want to change keyword, you need to update workflow settings:
