@@ -1,5 +1,8 @@
 ## Changelog
 
+### v1.0.11 - 2017-02-15
+* package outdated [#14](https://github.com/bchatard/jetbrains-alfred-workflow/issues/14)
+
 ### v1.0.10 - 2016-12-20
 * Add support for some special characters [#10](https://github.com/bchatard/jetbrains-alfred-workflow/issues/10)
 * Add 2016.3 keyword for PhpStorm & WebStorm [#9](https://github.com/bchatard/jetbrains-alfred-workflow/issues/9)
