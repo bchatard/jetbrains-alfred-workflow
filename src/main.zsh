@@ -8,11 +8,10 @@ IFS='#########################'
 
 BIN=$1
 QUERY=$2
-
 ##
- # 0: disabled / 1: enabled
+ # 0: disabled (default) / 1: enabled
  # if enabled log information in file debug_YMD.log (in current directory)
-DEBUG=0
+DEBUG=${jb_debug:-0} # from environment variable
 
 
 XPATH_RECENT_PROJECT_DIRECTORIES="//component[@name='RecentDirectoryProjectsManager']/option[@name='recentPaths']/list/option/@value"

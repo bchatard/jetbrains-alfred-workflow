@@ -1,5 +1,10 @@
 ## Changelog
 
+### v1.0.12 - 2017-03-28
+* add Gogland support 
+* update supported versions
+* enhance debug mode (see [README](README.md#debug))
+
 ### v1.0.11 - 2017-02-15
 * package outdated [#14](https://github.com/bchatard/jetbrains-alfred-workflow/issues/14)
 

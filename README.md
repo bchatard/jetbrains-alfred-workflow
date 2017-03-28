@@ -19,6 +19,7 @@ Example with PhpStorm:
 1. Download workflow from `package` folder, or [here](https://github.com/bchatard/jetbrains-alfred-workflow/blob/master/package/JetBrains%20-%20Open%20project.alfredworkflow?raw=true)
 2. Double click on downloaded file (JetBrains - Open project.alfredworkflow)
 
+Alfred2 user, please use _JetBrains - Open project - Alfred2.alfredworkflow_ (not updated since v1.0.9)
 
 ## How to use
 * Open Alfred with your usual hotkey
@@ -34,6 +35,7 @@ Example with PhpStorm:
  * RubyMine: `mine`;
  * WebStorm: `wstorm` (before 2016.3) or `webstorm` (2016.3+);
  * Android Studio: `studio`;
+ * Gogland: `gogland` ;
 
 
 
@@ -41,16 +43,18 @@ Example with PhpStorm:
 I test with this products/versions:
 
 * AppCode: v3.3 ;
-* CLion: v1.2 / 2016.x ;
-* IntelliJ Idea CE: v15 / 2016.x ;
-* PhpStorm: v10 / 2016.x ;
-* PyCharm CE: v5 / 2016.x ;
-* RubyMine: v8 / 2016.x ;
-* WebStorm: v11 / 2016.x ;
+* CLion: v1.2 / 2016.x / 2017.x  ;
+* IntelliJ Idea CE: v15 / 2016.x / 2017.x  ;
+* PhpStorm: v10 / 2016.x / 2017.x  ;
+* PyCharm CE: v5 / 2016.x / 2017.x  ;
+* RubyMine: v8 / 2016.x / 2017.x  ;
+* WebStorm: v11 / 2016.x / 2017.x  ;
 * Android Studio: v2.x ;
+* Gogland: 2017.x ; 
 
 NB: about PhpStorm, if you need compatibility with older version please use my old workflow: [PhpStorm Alfred Workflow](https://github.com/bchatard/phpstorm-alfred-workflow)
-NB2: PhpStorm & WebStorm change bin name in 2016.3 [#9](https://github.com/bchatard/jetbrains-alfred-workflow/issues/9).
+
+NB2: PhpStorm & WebStorm change default bin name in 2016.3 [#9](https://github.com/bchatard/jetbrains-alfred-workflow/issues/9).
 
 ### Customisation
 If you change command line tools name/path or if you want to change keyword, you need to update workflow settings:
@@ -64,9 +68,19 @@ If you change command line tools name/path or if you want to change keyword, you
 ![jetbrains-workflow-script-edit](https://raw.githubusercontent.com/bchatard/jetbrains-alfred-workflow/master/doc/img/customisation/jetbrains-workflow-script-edit.png)
 
 
-## Caskroom Users
+## Known issue
 After an application upgrade you need to update the _Command-line launcher_
 ![jetbrains-alfred-caskroom](https://raw.githubusercontent.com/bchatard/jetbrains-alfred-workflow/master/doc/img/caskroom/jetbrains-alfred-caskroom.png)
+
+
+## Debug
+
+1. Go to Workflows and select "JetBrains - Open project"
+2. Click on _Configure workflow and variables_
+![jetbrains-workflow-script-edit](https://raw.githubusercontent.com/bchatard/jetbrains-alfred-workflow/master/doc/img/debug/jetbrains-alfred-workflow-debug.png)
+3. Change environment variable `jb_debug` to `1`
+
+Log file will be written in workflow directory with pattern `debug_TODAY.log`.
 
 
 ## Changelog
