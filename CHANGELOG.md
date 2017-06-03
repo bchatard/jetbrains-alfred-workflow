@@ -1,5 +1,8 @@
 ## Changelog
 
+### v1.0.13 - 2017-06-03
+* add Rider support [#18](https://github.com/bchatard/jetbrains-alfred-workflow/issues/18)
+
 ### v1.0.12 - 2017-03-28
 * add Gogland support 
 * update supported versions

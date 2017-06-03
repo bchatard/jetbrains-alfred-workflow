@@ -36,6 +36,7 @@ Alfred2 user, please use _JetBrains - Open project - Alfred2.alfredworkflow_ (no
  * WebStorm: `wstorm` (before 2016.3) or `webstorm` (2016.3+);
  * Android Studio: `studio`;
  * Gogland: `gogland` ;
+ * Rider: `rider` ;
 
 
 
@@ -51,6 +52,7 @@ I test with this products/versions:
 * WebStorm: v11 / 2016.x / 2017.x  ;
 * Android Studio: v2.x ;
 * Gogland: 2017.x ; 
+* Rider: 2017.x ;
 
 NB: about PhpStorm, if you need compatibility with older version please use my old workflow: [PhpStorm Alfred Workflow](https://github.com/bchatard/phpstorm-alfred-workflow)
 
