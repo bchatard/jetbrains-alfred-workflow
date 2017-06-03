@@ -19,6 +19,8 @@ XPATH_RECENT_PROJECTS="//component[@name='RecentProjectsManager']/option[@name='
 
 XPATH_PROJECT_NAME="(//component[@name='ProjectView']/panes/pane[@id='ProjectPane']/subPane/PATH/PATH_ELEMENT/option/@value)[1]"
 
+XPATH_RECENT_SOLUTIONS="//component[@name='RiderRecentProjectsManager']/option[@name='recentPaths']/list/option/@value"
+
 ##
  # Retrieve project name from project configuration
  #  search project name in this file because project name can be different than folder name
@@ -38,6 +40,10 @@ extractProjectName()
         addDebug "extractProjectName via workspace.xml"
         projectName=$(xmlDecode $(xmllint --xpath ${XPATH_PROJECT_NAME} ${workspaceFile} 2>/dev/null | sed -e 's/ value="//g' -e 's/"//g'))
         echo ${projectName}
+    elif [[ $1 == *.sln ]]; then
+        addDebug "extractProjectName via directory name (Rider)"
+        projectName=$(basename $1)
+        echo ${projectName%.sln}
     fi
 }
 
@@ -58,6 +64,8 @@ getProjectsPath()
     recentProjectDirectories="${configPath}/options/recentProjectDirectories.xml"
     recentProjects="${configPath}/options/recentProjects.xml"
 
+    recentSolutions="${configPath}/options/recentSolutions.xml"
+
     projectsPath=''
 
     if [[ -r ${recentProjectDirectories} ]]; then
@@ -66,6 +74,9 @@ getProjectsPath()
     elif [[ -r ${recentProjects} ]]; then # Intellij Idea
         addDebug "Work with: ${recentProjects}"
         projectsPath=$(xmllint --xpath ${XPATH_RECENT_PROJECTS} ${recentProjects} 2>/dev/null)
+    elif [[ -r ${recentSolutions} ]]; then # Rider
+        addDebug "Work with: ${recentSolutions}"
+        projectsPath=$(xmllint --xpath ${XPATH_RECENT_SOLUTIONS} ${recentSolutions} 2>/dev/null)
     fi
 
     if [[ -n ${projectsPath} ]]; then
