@@ -18,6 +18,7 @@ XPATH_RECENT_PROJECT_DIRECTORIES="//component[@name='RecentDirectoryProjectsMana
 XPATH_RECENT_PROJECTS="//component[@name='RecentProjectsManager']/option[@name='recentPaths']/list/option/@value"
 
 XPATH_PROJECT_NAME="(//component[@name='ProjectView']/panes/pane[@id='ProjectPane']/subPane/PATH/PATH_ELEMENT/option/@value)[1]"
+XPATH_PROJECT_NAME_ALT="(//component[@name='ProjectView']/panes/pane[@id='ProjectPane']/subPane/expand/path/item[contains(@type, ':ProjectViewProjectNode')]/@name)[1]"
 
 XPATH_RECENT_SOLUTIONS="//component[@name='RiderRecentProjectsManager']/option[@name='recentPaths']/list/option/@value"
 
@@ -39,6 +40,10 @@ extractProjectName()
     elif [[ -r ${workspaceFile} ]]; then
         addDebug "extractProjectName via workspace.xml"
         projectName=$(xmlDecode $(xmllint --xpath ${XPATH_PROJECT_NAME} ${workspaceFile} 2>/dev/null | sed -e 's/ value="//g' -e 's/"//g'))
+        if [[ -z ${projectName} ]]; then
+            addDebug "extractProjectName via workspace.xml - alternative"
+            projectName=$(xmlDecode $(xmllint --xpath ${XPATH_PROJECT_NAME_ALT} ${workspaceFile} 2>/dev/null | sed -e 's/ name="//g' -e 's/"//g'))
+        fi
         echo ${projectName}
     elif [[ $1 == *.sln ]]; then
         addDebug "extractProjectName via directory name (Rider)"
