@@ -1,5 +1,8 @@
 ## Changelog
 
+### v1.0.14 - 2017-08-18
+* Add support for new workspace.xml [#22](https://github.com/bchatard/jetbrains-alfred-workflow/issues/22)
+
 ### v1.0.13 - 2017-06-03
 * add Rider support [#18](https://github.com/bchatard/jetbrains-alfred-workflow/issues/18)
 
