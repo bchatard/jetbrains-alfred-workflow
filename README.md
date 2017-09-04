@@ -1,11 +1,18 @@
 JetBrains: Open project
 ========================
 
-Alfred2 & Alfred3 workflow to easily open your projects with your favorite JetBrains product.
+__Alfred3__ workflow to easily open your projects with your favorite JetBrains product.
+
+⚠ Currently in beta, feedbacks welcome - [stable](https://github.com/bchatard/jetbrains-alfred-workflow/tree/v1.0)
+
 
 ## Requirements
+You need Alfred __3.4.1+__
+
 This workflow need one of JetBrains products, and its command line launchers to works:
 
+
+### Create command line launcher
 Example with PhpStorm:
 
 1. Open PhpStorm
@@ -19,12 +26,14 @@ Example with PhpStorm:
 1. Download workflow from `package` folder, or [here](https://github.com/bchatard/jetbrains-alfred-workflow/blob/master/package/JetBrains%20-%20Open%20project.alfredworkflow?raw=true)
 2. Double click on downloaded file (JetBrains - Open project.alfredworkflow)
 
-Alfred2 user, please use _JetBrains - Open project - Alfred2.alfredworkflow_ (not updated since v1.0.9)
+Alfred2 user, please use [v1.0](https://github.com/bchatard/jetbrains-alfred-workflow/tree/v1.0)
+
 
 ## How to use
 * Open Alfred with your usual hotkey
 * Type keyword (example `pstorm`) followed by your project name
 ![jetbrains-projects-secret-light](https://raw.githubusercontent.com/bchatard/jetbrains-alfred-workflow/master/doc/img/jetbrains-projects-secret-light.png)
+
 
 ### Default Keywords
  * AppCode: `appcode`;
@@ -39,8 +48,7 @@ Alfred2 user, please use _JetBrains - Open project - Alfred2.alfredworkflow_ (no
  * Rider: `rider` ;
 
 
-
-## Supported versions
+### Supported versions
 I test with this products/versions:
 
 * AppCode: v3.3 ;
@@ -58,14 +66,15 @@ NB: about PhpStorm, if you need compatibility with older version please use my o
 
 NB2: PhpStorm & WebStorm change default bin name in 2016.3 [#9](https://github.com/bchatard/jetbrains-alfred-workflow/issues/9).
 
-### Customisation
+
+## Customisation
 If you change command line tools name/path or if you want to change keyword, you need to update workflow settings:
 
 1. Go to Workflows and select "JetBrains - Open project"
 ![jetbrains-workflow-script-filter](https://raw.githubusercontent.com/bchatard/jetbrains-alfred-workflow/master/doc/img/customisation/jetbrains-workflow-script-filter.png)
 2. Double click on a box _Run script_ for a JetBrains product (example: PhpStorm)
   * Change value in _Keyword_ field
-  * Change bin value _Script_ field: `which YOUR_BIN_NAME`
+  * Change bin value _Script_ field: `echo (new Project('/YOUR/BIN/NAME/PATH'))->search("{query}");`
   * Save
 ![jetbrains-workflow-script-edit](https://raw.githubusercontent.com/bchatard/jetbrains-alfred-workflow/master/doc/img/customisation/jetbrains-workflow-script-edit.png)
 
@@ -87,6 +96,3 @@ Log file will be written in workflow directory with pattern `debug_TODAY.log`.
 
 ## Changelog
 [Changelog](CHANGELOG.md)
-
-## Credits
-[Bash Workflow Handler](https://github.com/markokaestner/bash-workflow-handler)

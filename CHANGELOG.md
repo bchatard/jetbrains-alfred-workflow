@@ -1,5 +1,10 @@
 ## Changelog
 
+### v2.0.0-beta1 - 2017-09-04
+* __Drop support for Alfred 2__ (require Alfred 3.4.1+)
+* Replace `zsh` code to `php` code (I'm more comfortable with PHP) 
+* Switch to JSON format [#21](https://github.com/bchatard/jetbrains-alfred-workflow/issues/21)
+
 ### v1.0.14 - 2017-08-18
 * Add support for new workspace.xml [#22](https://github.com/bchatard/jetbrains-alfred-workflow/issues/22)
 
