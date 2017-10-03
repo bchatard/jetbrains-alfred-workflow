@@ -24,6 +24,10 @@ class Item implements JsonSerializable
     /**
      * @var string
      */
+    private $match;
+    /**
+     * @var string
+     */
     private $arg = '';
     /**
      * @var array
@@ -93,6 +97,19 @@ class Item implements JsonSerializable
     public function setSubtitle($subtitle)
     {
         $this->subtitle = $subtitle;
+
+        return $this;
+    }
+
+    /**
+     * @param string $match
+     * @return Item
+     */
+    public function setMatch($match)
+    {
+        $match = mb_strtolower($match, 'UTF-8');
+
+        $this->match = $match;
 
         return $this;
     }

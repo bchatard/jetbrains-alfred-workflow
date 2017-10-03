@@ -1,5 +1,8 @@
 ## Changelog
 
+### v2.0.0-beta2 - 2017-10-04
+* Add support for _[match](https://www.alfredapp.com/help/workflows/inputs/script-filter/json/#match)_ attribute in JSON (but not used in workflow)
+
 ### v2.0.0-beta1 - 2017-09-04
 * __Drop support for Alfred 2__ (require Alfred 3.4.1+)
 * Replace `zsh` code to `php` code (I'm more comfortable with PHP) 

@@ -252,6 +252,7 @@ class Project
         $item = new Item();
         $item->setUid($name)
              ->setTitle($name)
+             ->setMatch($name)
              ->setSubtitle($path)
              ->setArg($path)
              ->setAutocomplete($name)

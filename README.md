@@ -7,7 +7,7 @@ __Alfred3__ workflow to easily open your projects with your favorite JetBrains p
 
 
 ## Requirements
-You need Alfred __3.4.1+__
+You need Alfred __3.5+__
 
 This workflow need one of JetBrains products, and its command line launchers to works:
 
