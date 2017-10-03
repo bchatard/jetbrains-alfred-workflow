@@ -22,6 +22,14 @@ class Project
 
     const XPATH_PROJECT_NAME = "(//component[@name='ProjectView']/panes/pane[@id='ProjectPane']/subPane/PATH/PATH_ELEMENT/option/@value)[1]";
     const XPATH_PROJECT_NAME_ALT = "(//component[@name='ProjectView']/panes/pane[@id='ProjectPane']/subPane/expand/path/item[contains(@type, ':ProjectViewProjectNode')]/@name)[1]";
+    const XPATH_PROJECT_NAME_AS = "((/project/component[@name='ChangeListManager']/ignored[contains(@path, '.iws')]/@path)[1])";
+    // doesn't works: http://php.net/manual/en/simplexmlelement.xpath.php#93730
+//    const XPATH_PROJECT_NAME_AS = "substring-before(((/project/component[@name='ChangeListManager']/ignored[contains(@path, '.iws')]/@path)[1]), '.iws')";
+
+    private static $LIST_XPATH_PROJECT_NAME = [
+        'value' => self::XPATH_PROJECT_NAME,
+        'name'  => self::XPATH_PROJECT_NAME_ALT,
+    ];
 
     /**
      * @var string
@@ -179,14 +187,18 @@ class Project
         if (is_readable($path . '/.idea/workspace.xml')) {
             $this->log('  Work with .idea/workspace.xml');
             $workspaceXml = new SimpleXMLElement($path . '/.idea/workspace.xml', null, true);
-            $nameElements = $workspaceXml->xpath(self::XPATH_PROJECT_NAME);
-            if (count($nameElements) > 0 && isset($nameElements[0]->value)) {
-                return trim($nameElements[0]->value->__toString());
+
+            foreach (static::$LIST_XPATH_PROJECT_NAME as $field => $xpath) {
+                $this->log("    try with {$xpath} || $field");
+                $nameElements = $workspaceXml->xpath($xpath);
+                if (count($nameElements) > 0 && isset($nameElements[0]->$field)) {
+                    return trim($nameElements[0]->$field->__toString());
+                }
             }
-            $this->log('    try with alt xpath');
-            $nameAltElements = $workspaceXml->xpath(self::XPATH_PROJECT_NAME_ALT);
-            if (count($nameAltElements) > 0 && isset($nameAltElements[0]->name)) {
-                return trim($nameAltElements[0]->name->__toString());
+
+            $nameElements = $workspaceXml->xpath(self::XPATH_PROJECT_NAME_AS);
+            if (count($nameElements) > 0 && isset($nameElements[0]->path)) {
+                return trim(trim($nameElements[0]->path->__toString()), '.iws');
             }
         }
 
@@ -332,6 +344,3 @@ class Project
     }
 
 }
-
-//echo (new Project('/usr/local/bin/pstorm'))->search('aaa') . "\n\n";
-//echo (new Project('/usr/local/bin/not_a_bin'))->search('aaa') . "\n\n";
