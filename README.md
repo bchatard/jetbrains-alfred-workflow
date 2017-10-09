@@ -84,6 +84,14 @@ After an application upgrade you need to update the _Command-line launcher_
 ![jetbrains-alfred-caskroom](https://raw.githubusercontent.com/bchatard/jetbrains-alfred-workflow/master/doc/img/caskroom/jetbrains-alfred-caskroom.png)
 
 
+## FAQ
+
+### How to update the Command-line launcher after the update of my software?
+> Follow "Create command line launcher" instructions again.
+
+### How to update the workflow
+> Download the latest package and open it
+
 ## Debug
 
 1. Go to Workflows and select "JetBrains - Open project"
@@ -96,3 +104,7 @@ Log file will be written in workflow directory with pattern `debug_TODAY.log`.
 
 ## Changelog
 [Changelog](CHANGELOG.md)
+
+## License
+
+[MIT](LICENSE) © [bchartard](https://github.com/bchatard)
