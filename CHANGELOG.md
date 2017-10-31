@@ -1,5 +1,9 @@
 ## Changelog
 
+### v2.0.0-beta3 - 2017-10-31
+* Fix [#29](https://github.com/bchatard/jetbrains-alfred-workflow/issues/29)
+* Rework code
+
 ### v2.0.0-beta2 - 2017-10-04
 * Add support for _[match](https://www.alfredapp.com/help/workflows/inputs/script-filter/json/#match)_ attribute in JSON (but not used in workflow)
 * Fix for [#25](https://github.com/bchatard/jetbrains-alfred-workflow/issues/25): Android Studio

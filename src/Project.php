@@ -8,6 +8,7 @@
 
 require_once __DIR__ . '/lib/Item.php';
 require_once __DIR__ . '/lib/Result.php';
+require_once __DIR__ . '/lib/ProjectName.php';
 
 class Project
 {
@@ -26,10 +27,6 @@ class Project
     // doesn't works: http://php.net/manual/en/simplexmlelement.xpath.php#93730
 //    const XPATH_PROJECT_NAME_AS = "substring-before(((/project/component[@name='ChangeListManager']/ignored[contains(@path, '.iws')]/@path)[1]), '.iws')";
 
-    private static $LIST_XPATH_PROJECT_NAME = [
-        'value' => self::XPATH_PROJECT_NAME,
-        'name'  => self::XPATH_PROJECT_NAME_ALT,
-    ];
 
     /**
      * @var string
@@ -56,9 +53,16 @@ class Project
      */
     private $debugFile;
 
+    /**
+     * @var string
+     */
+    private $cacheDir;
+
 
     public function __construct($jetbrainsApp)
     {
+        date_default_timezone_set('UTC');
+
         error_reporting(0); // hide all errors (not safe at all, but if a warning occur, it break the response)
 
         $this->jetbrainsApp = $jetbrainsApp;
@@ -66,10 +70,15 @@ class Project
 
         $this->debug = isset($_SERVER['jb_debug']) ? (bool)$_SERVER['jb_debug'] : false;
 
+        $this->cacheDir = $_SERVER['alfred_workflow_cache'];
+        if (!is_dir($this->cacheDir)) {
+            mkdir($this->cacheDir, 0750);
+        }
+
         if ($this->debug) {
             $this->result->enableDebug();
 
-            $this->debugFile = __DIR__ . '/debug_' . date('Ymd') . '.log';
+            $this->debugFile = $this->cacheDir . '/debug_' . date('Ymd') . '.log';
 
             $this->log('PHP version: ' . PHP_VERSION);
             $this->log("Received bin: {$this->jetbrainsApp}");
@@ -79,7 +88,9 @@ class Project
     public function search($query)
     {
         $this->log("\n" . __FUNCTION__ . "({$query})");
-        $hasQuery = !(trim($query) === '');
+        $query = $this->parseQuery($query);
+
+        $hasQuery = !($query === '');
         try {
             $this->checkJetbrainsApp();
             $projectsData = $this->getProjectsData();
@@ -109,12 +120,24 @@ class Project
             }
         }
 
+        $this->addDebugItem();
+
+        $this->log("Projects: {$this->result->__toString()}");
+
         return $this->result;
+    }
+
+    private function parseQuery($query)
+    {
+        $query = str_replace('\ ', ' ', $query);
+
+        return trim($query);
     }
 
     private function getProjectsData()
     {
         $this->log("\n" . __FUNCTION__);
+
         // @todo: manage cache
 
         if (is_readable($this->jetbrainsAppConfigPath . self::PATH_RECENT_PROJECT_DIRECTORIES)) {
@@ -146,6 +169,8 @@ class Project
             if ($optionElement->value) {
                 $path = str_replace('$USER_HOME$', $_SERVER['HOME'], $optionElement->value->__toString());
 
+                $this->log("\nProcess {$path}");
+
                 if (is_dir($path)) {
                     $name = $this->getProjectName($path);
                     if ($name) {
@@ -163,49 +188,34 @@ class Project
             }
         }
 
-        $this->log('Projects Data: ' . json_encode($projectsData));
+        $this->log('Projects Data:');
+        $this->log($projectsData);
 
         return $projectsData;
     }
 
     private function getProjectName($path)
     {
-        $this->log("\n" . __FUNCTION__ . "({$path})");
-        if (is_readable($path . '/.idea/name')) {
-            $this->log('  Work with .idea/name');
+        $this->log(__FUNCTION__);
 
-            return trim(file_get_contents($path . '/.idea/name'));
-        }
+        $logger = function ($message) {
+            $this->log($message);
+        };
 
-        $imlFile = glob($path . '/.idea/*.iml');
-        if (count($imlFile) === 1) {
-            $this->log('  Work with .iml');
+        $getProjectName = new ProjectName();
 
-            return trim(basename($imlFile[0], '.iml'));
-        }
+        $case = [
+            "{$path}/.idea/name"          => 'getViaName',
+            "{$path}/.idea/.name"         => 'getViaDotName',
+            "{$path}/.idea/.iml"          => 'getViaDotIml',
+            "{$path}/.idea/workspace.xml" => 'getViaWorkspace',
+            '.sln'                        => 'getViaDotSln',
+        ];
 
-        if (is_readable($path . '/.idea/workspace.xml')) {
-            $this->log('  Work with .idea/workspace.xml');
-            $workspaceXml = new SimpleXMLElement($path . '/.idea/workspace.xml', null, true);
-
-            foreach (static::$LIST_XPATH_PROJECT_NAME as $field => $xpath) {
-                $this->log("    try with {$xpath} || $field");
-                $nameElements = $workspaceXml->xpath($xpath);
-                if (count($nameElements) > 0 && isset($nameElements[0]->$field)) {
-                    return trim($nameElements[0]->$field->__toString());
-                }
+        foreach ($case as $argPath => $method) {
+            if ($projectName = $getProjectName->$method($argPath, $logger)) {
+                return $projectName;
             }
-
-            $nameElements = $workspaceXml->xpath(self::XPATH_PROJECT_NAME_AS);
-            if (count($nameElements) > 0 && isset($nameElements[0]->path)) {
-                return trim(trim($nameElements[0]->path->__toString()), '.iws');
-            }
-        }
-
-        if (strpos($path, '.sln') !== false) {
-            $this->log('  Work with .sln');
-
-            return trim(basename($path, '.sln'));
         }
 
         return false;
@@ -246,16 +256,13 @@ class Project
 
             }
             if (!$this->jetbrainsAppPath) {
-                throw new \RuntimeException("Can't find application path for '{$this->jetbrainsApp}'", 10);
+                throw new \RuntimeException("Can't find application path for '{$this->jetbrainsApp}'");
             }
             if (!$this->jetbrainsAppConfigPath) {
-                throw new \RuntimeException(
-                    "Can't find application configuration path for '{$this->jetbrainsApp}'",
-                    20
-                );
+                throw new \RuntimeException("Can't find application configuration path for '{$this->jetbrainsApp}'");
             }
         } else {
-            throw new \InvalidArgumentException("Can't find command line launcher for '{$this->jetbrainsApp}'", 30);
+            throw new \InvalidArgumentException("Can't find command line launcher for '{$this->jetbrainsApp}'");
         }
     }
 
@@ -326,6 +333,23 @@ class Project
         $this->result->addItem($item);
 
         $this->log($e);
+    }
+
+    public function addDebugItem()
+    {
+        if ($this->debug) {
+            $item = new Item();
+            $item->setUid('debug')
+                 ->setTitle("Debug file: {$this->debugFile}")
+                 ->setSubtitle('Add this file to your issue - ⌘+C to get the path')
+                 ->setArg('')
+                 ->setAutocomplete('')
+                 ->setValid(false)
+                 ->setIcon('AlertNoteIcon.icns')
+                 ->setText($this->debugFile);
+
+            $this->result->addItem($item);
+        }
     }
 
     private function log($message)

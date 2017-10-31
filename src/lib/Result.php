@@ -23,6 +23,10 @@ class Result
      */
     private $debug = false;
 
+    /**
+     * @param Item $item
+     * @return $this
+     */
     public function addItem(Item $item)
     {
         if ($item->validate()) {
@@ -46,6 +50,9 @@ class Result
         return $this;
     }
 
+    /**
+     * @return bool
+     */
     public function hasItems()
     {
         return (bool)count($this->items);
@@ -56,6 +63,11 @@ class Result
         $this->debug = true;
     }
 
+    /**
+     * Return json encoded result (pretty printed if debug is enabled)
+     *
+     * @return string
+     */
     public function __toString()
     {
         return json_encode(

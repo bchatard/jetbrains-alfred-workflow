@@ -96,10 +96,11 @@ After an application upgrade you need to update the _Command-line launcher_
 
 1. Go to Workflows and select "JetBrains - Open project"
 2. Click on _Configure workflow and variables_
-![jetbrains-workflow-script-edit](https://raw.githubusercontent.com/bchatard/jetbrains-alfred-workflow/master/doc/img/debug/jetbrains-alfred-workflow-debug.png)
+![jetbrains-alfred-workflow-debug](https://raw.githubusercontent.com/bchatard/jetbrains-alfred-workflow/master/doc/img/debug/jetbrains-alfred-workflow-debug.png)
 3. Change environment variable `jb_debug` to `1`
-
-Log file will be written in workflow directory with pattern `debug_TODAY.log`.
+4. Open Alfred with your usual hotkey, and type keyword (example `pstorm`) followed by debug
+5. You will see something like this, press ⌘ + C to copy path to log file
+![jetbrains-alfred-workflow-log](https://raw.githubusercontent.com/bchatard/jetbrains-alfred-workflow/master/doc/img/debug/jetbrains-alfred-workflow-log.png)
 
 
 ## Changelog
