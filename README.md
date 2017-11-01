@@ -67,6 +67,14 @@ NB: about PhpStorm, if you need compatibility with older version please use my o
 NB2: PhpStorm & WebStorm change default bin name in 2016.3 [#9](https://github.com/bchatard/jetbrains-alfred-workflow/issues/9).
 
 
+## JetBrains Actions
+
+With keyword `jb` you can access to some actions for this workflow.
+
+### Clean Projects Cache
+Projects list is cached for better performance (one cache per products). You can change cacle lifetime (see [environment variable](#workflow-environment-variables)). This command clean cache for all products.
+
+
 ## Customisation
 If you change command line tools name/path or if you want to change keyword, you need to update workflow settings:
 
@@ -81,13 +89,13 @@ If you change command line tools name/path or if you want to change keyword, you
 
 ## Known issue
 After an application upgrade you need to update the _Command-line launcher_
-![jetbrains-alfred-caskroom](https://raw.githubusercontent.com/bchatard/jetbrains-alfred-workflow/master/doc/img/caskroom/jetbrains-alfred-caskroom.png)
+![jetbrains-alfred-caskroom](https://raw.githubusercontent.com/bchatard/jetbrains-alfred-workflow/master/doc/img/jetbrains-alfred-update.png)
 
 
 ## FAQ
 
 ### How to update the Command-line launcher after the update of my software?
-> Follow "Create command line launcher" instructions again.
+> Follow "[Create command line launcher](#create-command-line-launcher)" instructions again.
 
 ### How to update the workflow
 > Download the latest package and open it
@@ -101,6 +109,11 @@ After an application upgrade you need to update the _Command-line launcher_
 4. Open Alfred with your usual hotkey, and type keyword (example `pstorm`) followed by debug
 5. You will see something like this, press ⌘ + C to copy path to log file
 ![jetbrains-alfred-workflow-log](https://raw.githubusercontent.com/bchatard/jetbrains-alfred-workflow/master/doc/img/debug/jetbrains-alfred-workflow-log.png)
+
+
+## Workflow Environment Variables
+* `jb_debug`: enable [debug mode](#debug)
+* `jb_cache_lifetime`: cache lifetime in seconds for projects list (default: 3600 seconds)
 
 
 ## Changelog

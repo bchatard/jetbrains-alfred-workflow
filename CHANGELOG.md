@@ -1,5 +1,11 @@
 ## Changelog
 
+### v2.0.0-beta4 - 2017-11-01
+* Add basic cache support ([#19](https://github.com/bchatard/jetbrains-alfred-workflow/issues/19))
+    * projects list is saved to a file (one file per products)
+    * add a variable for cache lifetime
+    * add new keyword for cleaning cache: `jb` (only one action for now: _Clean Projects Cache_)
+
 ### v2.0.0-beta3 - 2017-10-31
 * Fix [#29](https://github.com/bchatard/jetbrains-alfred-workflow/issues/29)
 * Rework code

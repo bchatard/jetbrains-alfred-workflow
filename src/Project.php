@@ -9,6 +9,7 @@
 require_once __DIR__ . '/lib/Item.php';
 require_once __DIR__ . '/lib/Result.php';
 require_once __DIR__ . '/lib/ProjectName.php';
+require_once __DIR__ . '/lib/Cache.php';
 
 class Project
 {
@@ -53,6 +54,10 @@ class Project
      */
     private $debugFile;
 
+    /**
+     * @var Cache
+     */
+    private $cache;
     /**
      * @var string
      */
@@ -138,7 +143,12 @@ class Project
     {
         $this->log("\n" . __FUNCTION__);
 
-        // @todo: manage cache
+        $projectsData = $this->cache->getProjectsData();
+        if (count($projectsData)) {
+            $this->log(' return projects data from cache');
+
+            return $projectsData;
+        }
 
         if (is_readable($this->jetbrainsAppConfigPath . self::PATH_RECENT_PROJECT_DIRECTORIES)) {
             $this->log(' Work with: ' . self::PATH_RECENT_PROJECT_DIRECTORIES);
@@ -190,6 +200,7 @@ class Project
 
         $this->log('Projects Data:');
         $this->log($projectsData);
+        $this->cache->setProjectsData($projectsData);
 
         return $projectsData;
     }
@@ -264,6 +275,14 @@ class Project
         } else {
             throw new \InvalidArgumentException("Can't find command line launcher for '{$this->jetbrainsApp}'");
         }
+
+        $cacheKey = str_replace('/', '_', $this->jetbrainsApp);
+        $cacheFile = "{$this->cacheDir}/{$cacheKey}.json";
+
+        $this->log("Cache Key: {$cacheKey}");
+        $this->log("Cache File: {$cacheFile}");
+
+        $this->cache = new Cache($cacheFile);
     }
 
     private function addProjectItem($name, $path)
@@ -319,7 +338,6 @@ class Project
      */
     private function addErrorItem($e)
     {
-
         $item = new Item();
         $item->setUid("e_{$e->getCode()}")
              ->setTitle($e->getMessage())
