@@ -74,7 +74,7 @@ class ProjectName
         return false;
     }
 
-    public function getViaViaDotSln($path, callable $logger)
+    public function getViaDotSln($path, callable $logger)
     {
         if (strpos($path, '.sln') !== false) {
             $logger('  Work with .sln');

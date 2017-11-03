@@ -181,7 +181,7 @@ class Project
 
                 $this->log("\nProcess {$path}");
 
-                if (is_dir($path)) {
+                if (is_readable($path)) {
                     $name = $this->getProjectName($path);
                     if ($name) {
                         $projectsData[] = [
@@ -218,9 +218,9 @@ class Project
         $case = [
             "{$path}/.idea/name"          => 'getViaName',
             "{$path}/.idea/.name"         => 'getViaDotName',
-            "{$path}/.idea/.iml"          => 'getViaDotIml',
+            "{$path}/.idea/*.iml"         => 'getViaDotIml',
             "{$path}/.idea/workspace.xml" => 'getViaWorkspace',
-            '.sln'                        => 'getViaDotSln',
+            $path                         => 'getViaDotSln',
         ];
 
         foreach ($case as $argPath => $method) {

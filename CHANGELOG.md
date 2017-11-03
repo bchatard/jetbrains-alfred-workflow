@@ -1,5 +1,8 @@
 ## Changelog
 
+### v2.0.0-beta5 - 2017-11-03
+* Fix [#32](https://github.com/bchatard/jetbrains-alfred-workflow/issues/32): Workflow does not find rider projects
+
 ### v2.0.0-beta4 - 2017-11-01
 * Add basic cache support ([#19](https://github.com/bchatard/jetbrains-alfred-workflow/issues/19))
     * projects list is saved to a file (one file per products)
