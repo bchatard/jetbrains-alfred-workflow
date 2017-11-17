@@ -1,5 +1,8 @@
 ## Changelog
 
+### v2.0.0-beta6 - 2017-11-17
+* Fix [#36](https://github.com/bchatard/jetbrains-alfred-workflow/issues/36): Please update package alfredworkflow file
+
 ### v2.0.0-beta5 - 2017-11-03
 * Fix [#32](https://github.com/bchatard/jetbrains-alfred-workflow/issues/32): Workflow does not find rider projects
 
