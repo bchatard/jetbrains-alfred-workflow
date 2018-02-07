@@ -36,16 +36,17 @@ Alfred2 user, please use [v1.0](https://github.com/bchatard/jetbrains-alfred-wor
 
 
 ### Default Keywords
- * AppCode: `appcode`;
- * CLion: `clion`;
- * IntelliJ Idea: `idea`;
- * PhpStorm: `pstorm` (before 2016.3) or `phpstorm` (2016.3+);
- * PyCharm: `charm`;
- * RubyMine: `mine`;
- * WebStorm: `wstorm` (before 2016.3) or `webstorm` (2016.3+);
- * Android Studio: `studio`;
+ * AppCode: `appcode` ;
+ * CLion: `clion` ;
+ * IntelliJ Idea: `idea` ;
+ * PhpStorm: `pstorm` (before 2016.3) or `phpstorm` (2016.3+) ;
+ * PyCharm: `charm` ;
+ * RubyMine: `mine` ;
+ * WebStorm: `wstorm` (before 2016.3) or `webstorm` (2016.3+) ;
+ * Android Studio: `studio` ;
  * Gogland: `gogland` ;
  * Rider: `rider` ;
+ * DataGrip: `datagrip` (since v2.0.0-beta7) ;
 
 
 ### Supported versions
@@ -61,6 +62,7 @@ I test with this products/versions:
 * Android Studio: v2.x ;
 * Gogland: 2017.x ; 
 * Rider: 2017.x ;
+* DataGrip: 2017.3+
 
 NB: about PhpStorm, if you need compatibility with older version please use my old workflow: [PhpStorm Alfred Workflow](https://github.com/bchatard/phpstorm-alfred-workflow)
 

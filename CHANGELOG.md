@@ -1,5 +1,9 @@
 ## Changelog
 
+### v2.0.0-beta7 - 2018-02-07
+* Fix [#39](https://github.com/bchatard/jetbrains-alfred-workflow/issues/39): Feature request: add DataGrip support
+* update license year
+
 ### v2.0.0-beta6 - 2017-11-17
 * Fix [#36](https://github.com/bchatard/jetbrains-alfred-workflow/issues/36): Please update package alfredworkflow file
 

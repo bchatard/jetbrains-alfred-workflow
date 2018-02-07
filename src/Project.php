@@ -64,6 +64,10 @@ class Project
     private $cacheDir;
 
 
+    /**
+     * @param string $jetbrainsApp
+     * @throws \RuntimeException
+     */
     public function __construct($jetbrainsApp)
     {
         date_default_timezone_set('UTC');
@@ -76,8 +80,8 @@ class Project
         $this->debug = isset($_SERVER['jb_debug']) ? (bool)$_SERVER['jb_debug'] : false;
 
         $this->cacheDir = $_SERVER['alfred_workflow_cache'];
-        if (!is_dir($this->cacheDir)) {
-            mkdir($this->cacheDir, 0750);
+        if (!mkdir($this->cacheDir) && !is_dir($this->cacheDir)) {
+            throw new \RuntimeException(sprintf('Directory "%s" was not created', $this->cacheDir));
         }
 
         if ($this->debug) {
@@ -90,6 +94,10 @@ class Project
         }
     }
 
+    /**
+     * @param string $query
+     * @return Result
+     */
     public function search($query)
     {
         $this->log("\n" . __FUNCTION__ . "({$query})");
@@ -132,6 +140,10 @@ class Project
         return $this->result;
     }
 
+    /**
+     * @param string $query
+     * @return string
+     */
     private function parseQuery($query)
     {
         $query = str_replace('\ ', ' ', $query);
@@ -139,6 +151,10 @@ class Project
         return trim($query);
     }
 
+    /**
+     * @return array
+     * @throws \RuntimeException
+     */
     private function getProjectsData()
     {
         $this->log("\n" . __FUNCTION__);
@@ -177,7 +193,11 @@ class Project
         /** @var SimpleXMLElement $optionElement */
         foreach ($optionElements as $optionElement) {
             if ($optionElement->value) {
-                $path = str_replace('$USER_HOME$', $_SERVER['HOME'], $optionElement->value->__toString());
+                $path = str_replace(
+                    ['$USER_HOME$', '$APPLICATION_CONFIG_DIR$'],
+                    [$_SERVER['HOME'], $this->jetbrainsAppConfigPath],
+                    $optionElement->value->__toString()
+                );
 
                 $this->log("\nProcess {$path}");
 
@@ -205,6 +225,10 @@ class Project
         return $projectsData;
     }
 
+    /**
+     * @param string $path
+     * @return bool|string
+     */
     private function getProjectName($path)
     {
         $this->log(__FUNCTION__);
@@ -232,31 +256,38 @@ class Project
         return false;
     }
 
+    /**
+     *
+     * @throws \InvalidArgumentException
+     * @throws \RuntimeException
+     */
     private function checkJetbrainsApp()
     {
         $this->log("\n" . __FUNCTION__);
+
+        $paths = [
+            'RUN_PATH'    => 'jetbrainsAppPath',
+            'CONFIG_PATH' => 'jetbrainsAppConfigPath',
+        ];
+
         $handle = @fopen($this->jetbrainsApp, 'rb');
         if ($handle) {
             while (($row = fgets($handle)) !== false) {
-                if (strpos($row, 'RUN_PATH =') === 0) {
-                    $jetbrainsAppPath = str_replace('RUN_PATH = u', '', $row);
-                    $jetbrainsAppPath = trim($jetbrainsAppPath);
-                    $jetbrainsAppPath = trim($jetbrainsAppPath, "'");
-                    if (is_dir($jetbrainsAppPath) && is_readable($jetbrainsAppPath)) {
-                        $this->jetbrainsAppPath = $jetbrainsAppPath;
 
-                        $this->log("App path: {$this->jetbrainsAppPath}");
-                    }
-                }
-                if (strpos($row, 'CONFIG_PATH =') === 0) {
-                    $jetbrainsAppConfigPath = str_replace('CONFIG_PATH = u', '', $row);
-                    $jetbrainsAppConfigPath = trim($jetbrainsAppConfigPath);
-                    $jetbrainsAppConfigPath = trim($jetbrainsAppConfigPath, "'");
-                    if (is_dir($jetbrainsAppConfigPath) && is_readable($jetbrainsAppConfigPath)) {
-                        $this->jetbrainsAppConfigPath = $jetbrainsAppConfigPath;
+                foreach ($paths as $var => $field) {
+                    if (strpos($row, "{$var} =") === 0) {
+                        $path = str_replace("{$var} = u", '', $row);
+                        $path = trim($path);
+                        $path = trim($path, "'");
+                        if (is_dir($path) && is_readable($path)) {
+                            $this->$field = $path;
 
-                        $this->log("App config path: {$this->jetbrainsAppConfigPath}");
+                            $this->log("{$field}: {$this->$field}");
+
+                            break;
+                        }
                     }
+
                 }
 
                 if ($this->jetbrainsAppPath && $this->jetbrainsAppConfigPath) {
@@ -285,6 +316,10 @@ class Project
         $this->cache = new Cache($cacheFile);
     }
 
+    /**
+     * @param string $name
+     * @param string $path
+     */
     private function addProjectItem($name, $path)
     {
         $item = new Item();
@@ -301,6 +336,9 @@ class Project
         $this->result->addItem($item);
     }
 
+    /**
+     * @param string $query
+     */
     private function addNoProjectMatchItem($query)
     {
         $item = new Item();
@@ -353,7 +391,7 @@ class Project
         $this->log($e);
     }
 
-    public function addDebugItem()
+    private function addDebugItem()
     {
         if ($this->debug) {
             $item = new Item();
@@ -370,6 +408,9 @@ class Project
         }
     }
 
+    /**
+     * @param string|array|\stdClass $message
+     */
     private function log($message)
     {
         if ($this->debug) {
