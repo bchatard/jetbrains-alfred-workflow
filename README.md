@@ -44,7 +44,7 @@ Alfred2 user, please use [v1.0](https://github.com/bchatard/jetbrains-alfred-wor
  * RubyMine: `mine` ;
  * WebStorm: `wstorm` (before 2016.3) or `webstorm` (2016.3+) ;
  * Android Studio: `studio` ;
- * Gogland: `gogland` ;
+ * GoLand: `goland` ;
  * Rider: `rider` ;
  * DataGrip: `datagrip` (since v2.0.0-beta7) ;
 
@@ -60,7 +60,7 @@ I test with this products/versions:
 * RubyMine: v8 / 2016.x / 2017.x  ;
 * WebStorm: v11 / 2016.x / 2017.x  ;
 * Android Studio: v2.x ;
-* Gogland: 2017.x ; 
+* GoLand: 2017.x ; 
 * Rider: 2017.x ;
 * DataGrip: 2017.3+
 
