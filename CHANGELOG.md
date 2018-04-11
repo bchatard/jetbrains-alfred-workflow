@@ -1,5 +1,10 @@
 ## Changelog
 
+### v2.0.0-beta8 - 2018-04-11
+* Fix [#28](https://github.com/bchatard/jetbrains-alfred-workflow/issues/28): Notification on new version
+    * add new action under `jb` keyword : _Check workflow update_
+* update supported version
+
 ### v2.0.0-beta7 - 2018-02-07
 * Fix [#39](https://github.com/bchatard/jetbrains-alfred-workflow/issues/39): Feature request: add DataGrip support
 * update license year

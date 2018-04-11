@@ -4,3 +4,6 @@
 # Debug log
 /*.log
 /*/*.log
+
+# My dirty tests
+/src/tests.php

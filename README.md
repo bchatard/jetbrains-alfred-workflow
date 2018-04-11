@@ -54,12 +54,12 @@ I test with this products/versions:
 
 * AppCode: v3.3 ;
 * CLion: v1.2 / 2016.x / 2017.x  ;
-* IntelliJ Idea CE: v15 / 2016.x / 2017.x  ;
-* PhpStorm: v10 / 2016.x / 2017.x  ;
+* IntelliJ Idea CE: v15 / 2016.x / 2017.x / 2018.x ;
+* PhpStorm: v10 / 2016.x / 2017.x / 2018.x ;
 * PyCharm CE: v5 / 2016.x / 2017.x  ;
 * RubyMine: v8 / 2016.x / 2017.x  ;
-* WebStorm: v11 / 2016.x / 2017.x  ;
-* Android Studio: v2.x ;
+* WebStorm: v11 / 2016.x / 2017.x / 2018.x  ;
+* Android Studio: v2.x / v3.x ;
 * GoLand: 2017.x ; 
 * Rider: 2017.x ;
 * DataGrip: 2017.3+
@@ -74,8 +74,10 @@ NB2: PhpStorm & WebStorm change default bin name in 2016.3 [#9](https://github.c
 With keyword `jb` you can access to some actions for this workflow.
 
 ### Clean Projects Cache
-Projects list is cached for better performance (one cache per products). You can change cacle lifetime (see [environment variable](#workflow-environment-variables)). This command clean cache for all products.
+Projects list is cached for better performance (one cache per products). You can change cache lifetime (see [environment variable](#workflow-environment-variables)). This command clean cache for all products.
 
+### Check workflow update
+Check if a new release is available for this workflow.
 
 ## Customisation
 If you change command line tools name/path or if you want to change keyword, you need to update workflow settings:
