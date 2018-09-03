@@ -34,7 +34,7 @@ class Action
     }
 
     /**
-     * @param null $query
+     * @param null|string $query
      * @return string
      */
     public function execute($query = null)

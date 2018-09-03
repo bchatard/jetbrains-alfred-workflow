@@ -9,6 +9,9 @@
 
 class Item implements JsonSerializable
 {
+
+    const ICON_TYPE_FILEICON = 'fileicon';
+
     /**
      * @var string
      */

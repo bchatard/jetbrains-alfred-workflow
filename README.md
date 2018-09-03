@@ -3,8 +3,6 @@ JetBrains: Open project
 
 __Alfred3__ workflow to easily open your projects with your favorite JetBrains product.
 
-⚠ Currently in beta, feedbacks welcome - [stable](https://github.com/bchatard/jetbrains-alfred-workflow/tree/v1.0)
-
 
 ## Requirements
 You need Alfred __3.5+__

@@ -1,5 +1,8 @@
 ## Changelog
 
+### v2.0.0 - 2018-04-11 - stable
+* clean up code
+
 ### v2.0.0-beta8 - 2018-04-11
 * Fix [#28](https://github.com/bchatard/jetbrains-alfred-workflow/issues/28): Notification on new version
     * add new action under `jb` keyword : _Check workflow update_

@@ -10,7 +10,7 @@
 class ProjectName
 {
 
-    private static $LIST_XPATH_PROJECT_NAME = [
+    private $listXpathProjectName = [
         'value' => Project::XPATH_PROJECT_NAME,
         'name'  => Project::XPATH_PROJECT_NAME_ALT,
     ];
@@ -55,7 +55,7 @@ class ProjectName
             $logger('  Work with .idea/workspace.xml');
             $workspaceXml = new SimpleXMLElement($path, null, true);
 
-            foreach (static::$LIST_XPATH_PROJECT_NAME as $field => $xpath) {
+            foreach ($this->listXpathProjectName as $field => $xpath) {
                 $logger("    try with {$xpath} || $field");
                 $nameElements = $workspaceXml->xpath($xpath);
                 if (count($nameElements) > 0 && isset($nameElements[0]->$field)) {

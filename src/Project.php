@@ -25,8 +25,6 @@ class Project
     const XPATH_PROJECT_NAME = "(//component[@name='ProjectView']/panes/pane[@id='ProjectPane']/subPane/PATH/PATH_ELEMENT/option/@value)[1]";
     const XPATH_PROJECT_NAME_ALT = "(//component[@name='ProjectView']/panes/pane[@id='ProjectPane']/subPane/expand/path/item[contains(@type, ':ProjectViewProjectNode')]/@name)[1]";
     const XPATH_PROJECT_NAME_AS = "((/project/component[@name='ChangeListManager']/ignored[contains(@path, '.iws')]/@path)[1])";
-    // doesn't works: http://php.net/manual/en/simplexmlelement.xpath.php#93730
-//    const XPATH_PROJECT_NAME_AS = "substring-before(((/project/component[@name='ChangeListManager']/ignored[contains(@path, '.iws')]/@path)[1]), '.iws')";
 
 
     /**
@@ -48,7 +46,7 @@ class Project
     /**
      * @var bool
      */
-    private $debug;
+    private $debug = false;
     /**
      * @var string
      */
@@ -66,7 +64,7 @@ class Project
 
     /**
      * @param string $jetbrainsApp
-     * @throws \RuntimeException
+     * @throws WorkflowException
      */
     public function __construct($jetbrainsApp)
     {
@@ -77,11 +75,13 @@ class Project
         $this->jetbrainsApp = $jetbrainsApp;
         $this->result = new Result();
 
-        $this->debug = isset($_SERVER['jb_debug']) ? (bool)$_SERVER['jb_debug'] : false;
+        if (isset($_SERVER['jb_debug'])) {
+            $this->debug = (bool)$_SERVER['jb_debug'];
+        }
 
         $this->cacheDir = $_SERVER['alfred_workflow_cache'];
         if (!mkdir($this->cacheDir) && !is_dir($this->cacheDir)) {
-            throw new \RuntimeException(sprintf('Directory "%s" was not created', $this->cacheDir));
+            throw new WorkflowException(sprintf('Directory "%s" was not created', $this->cacheDir));
         }
 
         if ($this->debug) {
@@ -166,21 +166,7 @@ class Project
             return $projectsData;
         }
 
-        if (is_readable($this->jetbrainsAppConfigPath . self::PATH_RECENT_PROJECT_DIRECTORIES)) {
-            $this->log(' Work with: ' . self::PATH_RECENT_PROJECT_DIRECTORIES);
-            $file = $this->jetbrainsAppConfigPath . self::PATH_RECENT_PROJECT_DIRECTORIES;
-            $xpath = self::XPATH_RECENT_PROJECT_DIRECTORIES;
-        } elseif (is_readable($this->jetbrainsAppConfigPath . self::PATH_RECENT_PROJECTS)) {
-            $this->log(' Work with: ' . self::PATH_RECENT_PROJECTS);
-            $file = $this->jetbrainsAppConfigPath . self::PATH_RECENT_PROJECTS;
-            $xpath = self::XPATH_RECENT_PROJECTS;
-        } elseif (is_readable($this->jetbrainsAppConfigPath . self::PATH_RECENT_SOLUTIONS)) {
-            $this->log(' Work with: ' . self::PATH_RECENT_SOLUTIONS);
-            $file = $this->jetbrainsAppConfigPath . self::PATH_RECENT_SOLUTIONS;
-            $xpath = self::XPATH_RECENT_SOLUTIONS;
-        } else {
-            throw new \RuntimeException("Can't find 'options' XML in '{$this->jetbrainsAppConfigPath}'", 100);
-        }
+        list($file, $xpath) = $this->getFileAndXpath();
 
         $projectsData = [];
 
@@ -226,6 +212,32 @@ class Project
     }
 
     /**
+     * @return array
+     * @throws WorkflowException
+     */
+    private function getFileAndXpath()
+    {
+        $message = ' Work with: %s';
+        if (is_readable($this->jetbrainsAppConfigPath . self::PATH_RECENT_PROJECT_DIRECTORIES)) {
+            $this->log(sprintf($message, self::PATH_RECENT_PROJECT_DIRECTORIES));
+            $file = $this->jetbrainsAppConfigPath . self::PATH_RECENT_PROJECT_DIRECTORIES;
+            $xpath = self::XPATH_RECENT_PROJECT_DIRECTORIES;
+        } elseif (is_readable($this->jetbrainsAppConfigPath . self::PATH_RECENT_PROJECTS)) {
+            $this->log(sprintf($message, self::PATH_RECENT_PROJECTS));
+            $file = $this->jetbrainsAppConfigPath . self::PATH_RECENT_PROJECTS;
+            $xpath = self::XPATH_RECENT_PROJECTS;
+        } elseif (is_readable($this->jetbrainsAppConfigPath . self::PATH_RECENT_SOLUTIONS)) {
+            $this->log(sprintf($message, self::PATH_RECENT_SOLUTIONS));
+            $file = $this->jetbrainsAppConfigPath . self::PATH_RECENT_SOLUTIONS;
+            $xpath = self::XPATH_RECENT_SOLUTIONS;
+        } else {
+            throw new WorkflowException("Can't find 'options' XML in '{$this->jetbrainsAppConfigPath}'", 100);
+        }
+
+        return [$file, $xpath];
+    }
+
+    /**
      * @param string $path
      * @return bool|string
      */
@@ -259,7 +271,7 @@ class Project
     /**
      *
      * @throws \InvalidArgumentException
-     * @throws \RuntimeException
+     * @throws WorkflowException
      */
     private function checkJetbrainsApp()
     {
@@ -274,34 +286,19 @@ class Project
         if ($handle) {
             while (($row = fgets($handle)) !== false) {
 
-                foreach ($paths as $var => $field) {
-                    if (strpos($row, "{$var} =") === 0) {
-                        $path = str_replace("{$var} = u", '', $row);
-                        $path = trim($path);
-                        $path = trim($path, "'");
-                        if (is_dir($path) && is_readable($path)) {
-                            $this->$field = $path;
-
-                            $this->log("{$field}: {$this->$field}");
-
-                            break;
-                        }
-                    }
-
-                }
+                $this->searchAppAndConfigPath($paths, $row);
 
                 if ($this->jetbrainsAppPath && $this->jetbrainsAppConfigPath) {
                     $this->result->addVariable('bin', $this->jetbrainsApp);
 
                     break;
                 }
-
             }
             if (!$this->jetbrainsAppPath) {
-                throw new \RuntimeException("Can't find application path for '{$this->jetbrainsApp}'");
+                throw new WorkflowException("Can't find application path for '{$this->jetbrainsApp}'");
             }
             if (!$this->jetbrainsAppConfigPath) {
-                throw new \RuntimeException("Can't find application configuration path for '{$this->jetbrainsApp}'");
+                throw new WorkflowException("Can't find application configuration path for '{$this->jetbrainsApp}'");
             }
         } else {
             throw new \InvalidArgumentException("Can't find command line launcher for '{$this->jetbrainsApp}'");
@@ -317,6 +314,28 @@ class Project
     }
 
     /**
+     * @param array  $paths
+     * @param string $row
+     */
+    private function searchAppAndConfigPath($paths, $row)
+    {
+        foreach ($paths as $var => $field) {
+            if (strpos($row, "{$var} =") === 0) {
+                $path = str_replace("{$var} = u", '', $row);
+                $path = trim($path);
+                $path = trim($path, "'");
+                if (is_dir($path) && is_readable($path)) {
+                    $this->$field = $path;
+
+                    $this->log("{$field}: {$this->$field}");
+
+                    break;
+                }
+            }
+        }
+    }
+
+    /**
      * @param string $name
      * @param string $path
      */
@@ -329,7 +348,7 @@ class Project
              ->setSubtitle($path)
              ->setArg($path)
              ->setAutocomplete($name)
-             ->setIcon($this->jetbrainsAppPath, 'fileicon')
+             ->setIcon($this->jetbrainsAppPath, Item::ICON_TYPE_FILEICON)
              ->setText($path, $path)
              ->setVariables('name', $name);
 
@@ -348,7 +367,7 @@ class Project
              ->setArg('')
              ->setAutocomplete('')
              ->setValid(false)
-             ->setIcon($this->jetbrainsAppPath, 'fileicon');
+             ->setIcon($this->jetbrainsAppPath, Item::ICON_TYPE_FILEICON);
 
         $this->result->addItem($item);
 
@@ -409,7 +428,7 @@ class Project
     }
 
     /**
-     * @param string|array|\stdClass $message
+     * @param string|array|\stdClass|\Exception $message
      */
     private function log($message)
     {
@@ -426,4 +445,8 @@ class Project
         }
     }
 
+}
+
+class WorkflowException extends \RuntimeException
+{
 }
