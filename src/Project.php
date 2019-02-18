@@ -10,6 +10,7 @@ require_once __DIR__ . '/lib/Item.php';
 require_once __DIR__ . '/lib/Result.php';
 require_once __DIR__ . '/lib/ProjectName.php';
 require_once __DIR__ . '/lib/Cache.php';
+require_once __DIR__ . '/ProjectWorkaround.php';
 
 class Project
 {
@@ -61,7 +62,7 @@ class Project
      */
     private $cacheDir;
 
-
+    private $useWorkaround = false;
     /**
      * @param string $jetbrainsApp
      * @throws WorkflowException
@@ -77,6 +78,9 @@ class Project
 
         if (isset($_SERVER['jb_debug'])) {
             $this->debug = (bool)$_SERVER['jb_debug'];
+        }
+        if (isset($_SERVER['jb_toolbox_workaround'], $_SERVER['jb_app_version'])) {
+            $this->useWorkaround = (bool)$_SERVER['jb_toolbox_workaround'];
         }
 
         $this->cacheDir = $_SERVER['alfred_workflow_cache'];
@@ -277,31 +281,37 @@ class Project
     {
         $this->log("\n" . __FUNCTION__);
 
-        $paths = [
-            'RUN_PATH'    => 'jetbrainsAppPath',
-            'CONFIG_PATH' => 'jetbrainsAppConfigPath',
-        ];
-
-        $handle = @fopen($this->jetbrainsApp, 'rb');
-        if ($handle) {
-            while (($row = fgets($handle)) !== false) {
-
-                $this->searchAppAndConfigPath($paths, $row);
-
-                if ($this->jetbrainsAppPath && $this->jetbrainsAppConfigPath) {
-                    $this->result->addVariable('bin', $this->jetbrainsApp);
-
-                    break;
-                }
-            }
-            if (!$this->jetbrainsAppPath) {
-                throw new WorkflowException("Can't find application path for '{$this->jetbrainsApp}'");
-            }
-            if (!$this->jetbrainsAppConfigPath) {
-                throw new WorkflowException("Can't find application configuration path for '{$this->jetbrainsApp}'");
-            }
+        if ($this->useWorkaround) {
+            $wa = (new ProjectWorkaround($this->jetbrainsApp))->searchAppAndConfigPath();
+            $this->jetbrainsAppPath = $wa['app'];
+            $this->jetbrainsAppConfigPath = $wa['config'];
         } else {
-            throw new \InvalidArgumentException("Can't find command line launcher for '{$this->jetbrainsApp}'");
+            $paths = [
+                'RUN_PATH'    => 'jetbrainsAppPath',
+                'CONFIG_PATH' => 'jetbrainsAppConfigPath',
+            ];
+
+            $handle = @fopen($this->jetbrainsApp, 'rb');
+            if ($handle) {
+                while (($row = fgets($handle)) !== false) {
+
+                    $this->searchAppAndConfigPath($paths, $row);
+
+                    if ($this->jetbrainsAppPath && $this->jetbrainsAppConfigPath) {
+                        $this->result->addVariable('bin', $this->jetbrainsApp);
+
+                        break;
+                    }
+                }
+                if (!$this->jetbrainsAppPath) {
+                    throw new WorkflowException("Can't find application path for '{$this->jetbrainsApp}'");
+                }
+                if (!$this->jetbrainsAppConfigPath) {
+                    throw new WorkflowException("Can't find application configuration path for '{$this->jetbrainsApp}'");
+                }
+            } else {
+                throw new \InvalidArgumentException("Can't find command line launcher for '{$this->jetbrainsApp}'");
+            }
         }
 
         $cacheKey = str_replace('/', '_', $this->jetbrainsApp);
