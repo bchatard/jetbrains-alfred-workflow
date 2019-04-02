@@ -1,3 +1,13 @@
+:warning: 
+
+> Since 2019.1 versions, the behaviour of JetBrains `bin` change. I'm working on a new solution
+>
+> Hope an alpha release soon
+>
+> Sorry
+
+:warning: 
+
 JetBrains: Open project
 ========================
 
