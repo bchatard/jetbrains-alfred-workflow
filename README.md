@@ -1,8 +1,10 @@
 :warning: 
 
-> Since 2019.1 versions, the behaviour of JetBrains `bin` change. I'm working on a new solution
+> Since 2019.1 versions, the behaviour of JetBrains `bin` change.
 >
-> Hope an alpha release soon
+> Try the new version of the workflow: [Alfred JetBrains](https://github.com/bchatard/alfred-jetbrains)
+> 
+> Please disable this workflow before, to avoid `keyword` conflict
 >
 > Sorry
 
