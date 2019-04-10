@@ -135,4 +135,4 @@ After an application upgrade you need to update the _Command-line launcher_
 
 ## License
 
-[MIT](LICENSE) © [bchartard](https://github.com/bchatard)
+[MIT](LICENSE) © [bchatard](https://github.com/bchatard)
